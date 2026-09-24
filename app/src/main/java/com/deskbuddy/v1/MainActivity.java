@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendTestMusic() {
-        ble.sendJson("{"type":"MUSIC","title":"Desk Buddy Test","artist":"ESP32","app":"Desk Buddy","playing":true}");
+        ble.sendJson("{\"type\":\"MUSIC\",\"title\":\"Desk Buddy Test\",\"artist\":\"ESP32\",\"app\":\"Desk Buddy\",\"playing\":true}");
     }
 
     private void requestBluetoothAndScan() {
