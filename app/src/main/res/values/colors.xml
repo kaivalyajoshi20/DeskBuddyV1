@@ -1,4 +1,11 @@
 <resources>
-    <color name="desk_bg">#F5F7FA</color>
-    <color name="desk_primary">#1769E0</color>
+    <color name="desk_bg">#0B1014</color>
+    <color name="desk_nav">#10171D</color>
+    <color name="desk_card">#141D24</color>
+    <color name="desk_text">#F4F7F8</color>
+    <color name="desk_muted">#8E9AA3</color>
+    <color name="desk_accent">#8BE0B4</color>
+    <color name="desk_green">#72D6A1</color>
+    <color name="desk_blue">#6DB5FF</color>
+    <color name="desk_purple">#B39BFF</color>
 </resources>
