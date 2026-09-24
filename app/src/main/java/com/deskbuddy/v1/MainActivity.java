@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -25,9 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeScanner scanner;
 
     private final ActivityResultLauncher<String[]> permissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-                startScan();
-            });
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> startScan());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,27 +32,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         statusText = findViewById(R.id.statusText);
-        Button connect = findViewById(R.id.connectButton);
-        Button test = findViewById(R.id.testButton);
-        Button notifications = findViewById(R.id.notificationButton);
-        Button bluetooth = findViewById(R.id.bluetoothButton);
-
         ble = BuddyBleManager.get(this);
         ble.setStatusListener(() -> statusText.setText(ble.getStatus()));
         statusText.setText(ble.getStatus());
 
-        connect.setOnClickListener(v -> requestBluetoothAndScan());
+        findViewById(R.id.connectCard).setOnClickListener(v -> requestBluetoothAndScan());
 
-        test.setOnClickListener(v -> ble.sendJson(
-                "{\"type\":\"MUSIC\",\"title\":\"Desk Buddy Test\",\"artist\":\"ESP32\",\"app\":\"Desk Buddy\",\"playing\":true}"
-        ));
+        findViewById(R.id.musicCard).setOnClickListener(v -> sendTestMusic());
+        findViewById(R.id.testButton).setOnClickListener(v -> sendTestMusic());
 
-        notifications.setOnClickListener(v ->
+        findViewById(R.id.notificationCard).setOnClickListener(v ->
                 startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")));
 
-        bluetooth.setOnClickListener(v -> requestBluetoothAndScan());
+        findViewById(R.id.settingsButton).setOnClickListener(v ->
+                startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS)));
 
         requestBluetoothAndScan();
+    }
+
+    private void sendTestMusic() {
+        ble.sendJson("{"type":"MUSIC","title":"Desk Buddy Test","artist":"ESP32","app":"Desk Buddy","playing":true}");
     }
 
     private void requestBluetoothAndScan() {
@@ -78,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private void startScan() {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null || !adapter.isEnabled()) {
-            statusText.setText("Turn Bluetooth on");
+            statusText.setText("Bluetooth is off");
             return;
         }
 
@@ -88,12 +84,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        statusText.setText("Scanning for DeskBuddy…");
+        statusText.setText("Searching for Desk Buddy…");
         scanner.startScan(scanCallback);
 
         statusText.postDelayed(() -> {
             try { scanner.stopScan(scanCallback); } catch (Exception ignored) {}
-            if (!ble.isConnected()) statusText.setText("Scan finished — tap Connect to retry");
+            if (!ble.isConnected()) statusText.setText("Not connected");
         }, 8000);
     }
 
